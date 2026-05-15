@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation("androidx.compose.material:material-icons-extended:1.6.7")
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -62,17 +64,23 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.client.logging)
+
+            // Settings for "Remember me"
+            implementation(libs.multiplatformSettings)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.ktor.client.okhttp)
+
         }
     }
 }
@@ -106,6 +114,8 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+
 }
 
 compose.desktop {
