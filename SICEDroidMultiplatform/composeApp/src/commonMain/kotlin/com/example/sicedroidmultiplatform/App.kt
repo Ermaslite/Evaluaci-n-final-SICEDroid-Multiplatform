@@ -1,70 +1,130 @@
 package com.example.sicedroidmultiplatform
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.sicedroidmultiplatform.data.repository.SicenetRepository
+import com.example.sicedroidmultiplatform.ui.login.LoginScreen
+import com.example.sicedroidmultiplatform.ui.login.LoginViewModel
+import com.example.sicedroidmultiplatform.ui.profile.ProfileScreen
+import com.example.sicedroidmultiplatform.ui.profile.ProfileViewModel
+import com.example.sicedroidmultiplatform.ui.carga.CargaScreen
+import com.example.sicedroidmultiplatform.ui.carga.CargaViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
-    MaterialTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            LoginScreen()
-        }
-    }
-}
+    val darkTheme = isSystemInDarkTheme()
+    val colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
 
-@Composable
-fun LoginScreen() {
-    var matricula by remember { mutableStateOf("") }
-    var contrasenia by remember { mutableStateOf("") }
-    val tipoUsuario = "Alumno"
+    var currentScreen by remember { mutableStateOf("login") }
+    var selectedItem by remember { mutableStateOf("Perfil") }
+    
+    val repository = remember { SicenetRepository() }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "SICEDroid",
-            style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.padding(bottom = 32.dp),
-            color = MaterialTheme.colorScheme.primary
-        )
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            if (currentScreen == "login") {
+                val loginViewModel = remember { LoginViewModel(repository) }
+                LoginScreen(
+                    viewModel = loginViewModel,
+                    onLoginSuccess = { currentScreen = "main" }
+                )
+            } else {
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    drawerContent = {
+                        ModalDrawerSheet {
+                            Spacer(Modifier.height(12.dp))
+                            Text(
+                                "SICE MOVIL",
+                                modifier = Modifier.padding(16.dp),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
+                            HorizontalDivider()
+                            NavigationDrawerItem(
+                                label = { Text("Mi Perfil") },
+                                selected = selectedItem == "Perfil",
+                                onClick = {
+                                    selectedItem = "Perfil"
+                                    scope.launch { drawerState.close() }
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                                icon = { }
+                            )
+                            NavigationDrawerItem(
+                                label = { Text("Carga Académica") },
+                                selected = selectedItem == "Carga Académica",
+                                onClick = {
+                                    selectedItem = "Carga Académica"
+                                    scope.launch { drawerState.close() }
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                                icon = { }
+                            )
 
-        OutlinedTextField(
-            value = matricula,
-            onValueChange = { matricula = it },
-            label = { Text("Matrícula") },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-            singleLine = true
-        )
-
-        OutlinedTextField(
-            value = contrasenia,
-            onValueChange = { contrasenia = it },
-            label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
-            singleLine = true
-        )
-
-        Button(
-            onClick = {
-                // Aquí se conectará con SoapRequestBuilder más adelante
-                println("Login: $matricula, Tipo: $tipoUsuario")
-            },
-            modifier = Modifier.fillMaxWidth().height(50.dp)
-        ) {
-            Text("Entrar")
+                            Spacer(Modifier.weight(1f))
+                            TextButton(
+                                onClick = { 
+                                    currentScreen = "login"
+                                    scope.launch { drawerState.close() }
+                                },
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text("Cerrar Sesión", color = MaterialTheme.colorScheme.error)
+                            }
+                        }
+                    }
+                ) {
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                title = { Text(selectedItem, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) },
+                                navigationIcon = {
+                                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                        Column(
+                                            modifier = Modifier.size(24.dp),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            val color = MaterialTheme.colorScheme.onSurface
+                                            Box(Modifier.width(18.dp).height(2.dp).background(color))
+                                            Spacer(Modifier.height(4.dp))
+                                            Box(Modifier.width(18.dp).height(2.dp).background(color))
+                                            Spacer(Modifier.height(4.dp))
+                                            Box(Modifier.width(18.dp).height(2.dp).background(color))
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    ) { padding ->
+                        Box(modifier = Modifier.padding(padding)) {
+                            when (selectedItem) {
+                                "Perfil" -> {
+                                    val profileViewModel = remember { ProfileViewModel(repository) }
+                                    ProfileScreen(
+                                        viewModel = profileViewModel
+                                    )
+                                }
+                                "Carga Académica" -> {
+                                    val cargaViewModel = remember { CargaViewModel(repository) }
+                                    CargaScreen(viewModel = cargaViewModel)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
