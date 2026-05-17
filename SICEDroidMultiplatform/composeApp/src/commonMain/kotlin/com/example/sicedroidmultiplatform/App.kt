@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.sicedroidmultiplatform.data.repository.SicenetRepository
@@ -14,6 +15,8 @@ import com.example.sicedroidmultiplatform.ui.profile.ProfileScreen
 import com.example.sicedroidmultiplatform.ui.profile.ProfileViewModel
 import com.example.sicedroidmultiplatform.ui.carga.CargaScreen
 import com.example.sicedroidmultiplatform.ui.carga.CargaViewModel
+import com.example.sicedroidmultiplatform.ui.calificaciones.CalificacionesScreen
+import com.example.sicedroidmultiplatform.ui.calificaciones.CalificacionesViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +53,7 @@ fun App() {
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                             )
                             HorizontalDivider()
+                            
                             NavigationDrawerItem(
                                 label = { Text("Mi Perfil") },
                                 selected = selectedItem == "Perfil",
@@ -57,9 +61,9 @@ fun App() {
                                     selectedItem = "Perfil"
                                     scope.launch { drawerState.close() }
                                 },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                                icon = { }
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
+                            
                             NavigationDrawerItem(
                                 label = { Text("Carga Académica") },
                                 selected = selectedItem == "Carga Académica",
@@ -67,8 +71,17 @@ fun App() {
                                     selectedItem = "Carga Académica"
                                     scope.launch { drawerState.close() }
                                 },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                                icon = { }
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                            )
+                            
+                            NavigationDrawerItem(
+                                label = { Text("Calificaciones") },
+                                selected = selectedItem == "Calificaciones",
+                                onClick = {
+                                    selectedItem = "Calificaciones"
+                                    scope.launch { drawerState.close() }
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
 
                             Spacer(Modifier.weight(1f))
@@ -111,58 +124,19 @@ fun App() {
                             when (selectedItem) {
                                 "Perfil" -> {
                                     val profileViewModel = remember { ProfileViewModel(repository) }
-                                    ProfileScreen(
-                                        viewModel = profileViewModel
-                                    )
+                                    ProfileScreen(viewModel = profileViewModel)
                                 }
                                 "Carga Académica" -> {
                                     val cargaViewModel = remember { CargaViewModel(repository) }
                                     CargaScreen(viewModel = cargaViewModel)
                                 }
+                                "Calificaciones" -> {
+                                    val califViewModel = remember { CalificacionesViewModel(repository) }
+                                    CalificacionesScreen(viewModel = califViewModel)
+                                }
                             }
                         }
                     }
-    // Detectar si el sistema está en modo oscuro
-    val darkTheme = isSystemInDarkTheme()
-    
-    // Definir esquemas de colores
-    val colorScheme = if (darkTheme) {
-        darkColorScheme()
-    } else {
-        lightColorScheme()
-    }
-
-    // Estado de navegación simple
-    var currentScreen by remember { mutableStateOf("login") }
-    
-    // Repositorio compartido
-    val repository = remember { SicenetRepository() }
-
-    MaterialTheme(
-        colorScheme = colorScheme
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            when (currentScreen) {
-                "login" -> {
-                    val loginViewModel = remember { LoginViewModel(repository) }
-                    LoginScreen(
-                        viewModel = loginViewModel,
-                        onLoginSuccess = {
-                            currentScreen = "profile"
-                        }
-                    )
-                }
-                "profile" -> {
-                    val profileViewModel = remember { ProfileViewModel(repository) }
-                    ProfileScreen(
-                        viewModel = profileViewModel,
-                        onLogout = {
-                            currentScreen = "login"
-                        }
-                    )
                 }
             }
         }

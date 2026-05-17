@@ -16,9 +16,6 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel) {
-
-@Composable
-fun ProfileScreen(viewModel: ProfileViewModel, onLogout: () -> Unit) {
     val uiState = viewModel.uiState
 
     LaunchedEffect(Unit) {
@@ -43,17 +40,6 @@ fun ProfileScreen(viewModel: ProfileViewModel, onLogout: () -> Unit) {
                     Text("Atención", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error)
                     Spacer(Modifier.height(8.dp))
                     Text(uiState.message, textAlign = TextAlign.Center)
-                   Text(
-                        "Error",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        uiState.message,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.error
-                    )
                     Spacer(Modifier.height(24.dp))
                     Button(onClick = { viewModel.loadProfile() }) { Text("Reintentar") }
                 }
@@ -102,24 +88,6 @@ fun ProfileContent(data: Map<String, String>) {
             ProfileRow("Fecha de Reinscripción", data["fechaReins"] ?: "No disponible")
         }
         
-        HeaderSection(data["nombre"] ?: "Estudiante", data["matricula"] ?: "")
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        SectionTitle("Trayectoria Académica")
-        ProfileRow("Carrera", data["carrera"] ?: "No disponible")
-        ProfileRow("Especialidad", data["especialidad"] ?: "No disponible")
-        ProfileRow("Semestre Actual", "${data["semActual"] ?: "N/A"}° Semestre")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SectionTitle("Estatus y Créditos")
-        ProfileRow("Acumulados", data["cdtosAcumulados"] ?: "0")
-        ProfileRow("Actuales", data["cdtosActuales"] ?: "0")
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
-        ProfileRow("Situación", data["estatus"] ?: "Desconocido")
-        ProfileRow("Próxima Reinscripción", data["fechaReins"] ?: "No disponible")
-
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
@@ -134,20 +102,11 @@ fun HeaderSection(nombre: String, matricula: String) {
             shape = CircleShape,
             color = MaterialTheme.colorScheme.primaryContainer,
             shadowElevation = 2.dp
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Surface(
-            modifier = Modifier.size(90.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shadowElevation = 6.dp,
-            tonalElevation = 2.dp
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = inicial,
                     style = MaterialTheme.typography.headlineMedium,
-                    style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold
                 )
@@ -156,9 +115,6 @@ fun HeaderSection(nombre: String, matricula: String) {
         
         Spacer(modifier = Modifier.height(16.dp))
         
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         Text(
             text = nombre,
             style = MaterialTheme.typography.titleLarge,
@@ -194,16 +150,6 @@ fun InfoCard(title: String, content: @Composable () -> Unit) {
             content()
         }
     }
-fun SectionTitle(title: String) {
-    Text(
-        text = title.uppercase(),
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.primary,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)
-    )
 }
 
 @Composable
@@ -221,23 +167,5 @@ fun ProfileRow(label: String, value: String) {
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold
         )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.outline
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-        }
     }
 }
