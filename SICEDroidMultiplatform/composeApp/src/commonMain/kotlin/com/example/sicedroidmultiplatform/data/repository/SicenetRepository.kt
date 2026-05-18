@@ -71,4 +71,20 @@ class SicenetRepository {
             } else null
         } catch (e: Exception) { null }
     }
+
+    suspend fun getKardex(): String? {
+        return try {
+            val response = client.post("https://sicenet.surguanajuato.tecnm.mx/ws/wsalumnos.asmx") {
+                header("Content-Type", "text/xml; charset=utf-8")
+                header("SOAPAction", "\"http://tempuri.org/getAllKardexConPromedioByAlumno\"")
+                setBody(SoapRequestBuilder.buildKardexBody())
+            }
+            if (response.status == HttpStatusCode.OK) {
+                val body = response.bodyAsText()
+                body.substringAfter("<getAllKardexConPromedioByAlumnoResult>")
+                    .substringBefore("</getAllKardexConPromedioByAlumnoResult>")
+                    .replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"")
+            } else null
+        } catch (e: Exception) { null }
+    }
 }

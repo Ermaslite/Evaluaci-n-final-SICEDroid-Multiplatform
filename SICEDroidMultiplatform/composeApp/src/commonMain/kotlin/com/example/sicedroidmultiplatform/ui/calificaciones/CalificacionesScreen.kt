@@ -66,7 +66,7 @@ fun CalificacionAcademicaRow(calif: Calificacion) {
         
         Spacer(Modifier.height(8.dp))
         
-        // Muestra una lista horizontal con cada unidad y su respectiva calificación
+        // Fila dinámica de unidades detectadas
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)

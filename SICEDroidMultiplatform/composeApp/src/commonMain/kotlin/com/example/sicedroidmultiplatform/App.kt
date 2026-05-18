@@ -17,6 +17,8 @@ import com.example.sicedroidmultiplatform.ui.carga.CargaScreen
 import com.example.sicedroidmultiplatform.ui.carga.CargaViewModel
 import com.example.sicedroidmultiplatform.ui.calificaciones.CalificacionesScreen
 import com.example.sicedroidmultiplatform.ui.calificaciones.CalificacionesViewModel
+import com.example.sicedroidmultiplatform.ui.kardex.KardexScreen
+import com.example.sicedroidmultiplatform.ui.kardex.KardexViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,6 +86,16 @@ fun App() {
                                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
 
+                            NavigationDrawerItem(
+                                label = { Text("Kardex") },
+                                selected = selectedItem == "Kardex",
+                                onClick = {
+                                    selectedItem = "Kardex"
+                                    scope.launch { drawerState.close() }
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                            )
+
                             Spacer(Modifier.weight(1f))
                             TextButton(
                                 onClick = { 
@@ -133,6 +145,10 @@ fun App() {
                                 "Calificaciones" -> {
                                     val califViewModel = remember { CalificacionesViewModel(repository) }
                                     CalificacionesScreen(viewModel = califViewModel)
+                                }
+                                "Kardex" -> {
+                                    val kardexViewModel = remember { KardexViewModel(repository) }
+                                    KardexScreen(viewModel = kardexViewModel)
                                 }
                             }
                         }

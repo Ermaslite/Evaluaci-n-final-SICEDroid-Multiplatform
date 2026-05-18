@@ -31,7 +31,7 @@ class CalificacionesViewModel(private val repository: SicenetRepository) : ViewM
                         val obj = element.jsonObject
                         val materiaNombre = obj["Materia"]?.jsonPrimitive?.content ?: "Materia"
                         
-                        // Obtiene las calificaciones de cada unidad y las ordena por número
+                        // Extraemos y ordenamos las unidades numéricamente (1, 2, 3...)
                         val notas = obj.filter { it.key.startsWith("C") && it.key.length > 1 }
                             .mapNotNull { (key, value) ->
                                 val nota = value.jsonPrimitive.content.trim()
@@ -40,11 +40,11 @@ class CalificacionesViewModel(private val repository: SicenetRepository) : ViewM
                                 } else null
                             }
                             .sortedBy { (key, _) -> 
-                                // Toma solo el número de la unidad para ordenarlas de menor a mayor
+                                // Extrae el número después de la 'C' para ordenar correctamente
                                 key.substring(1).toIntOrNull() ?: 0 
                             }
                             .map { (key, nota) -> 
-                                // Cambia la letra 'C' por 'U' para que en pantalla se lea "U1", "U2", etc.
+                                // Reemplaza C por U para la vista (U1, U2...)
                                 key.replace("C", "U") to nota
                             }
                         

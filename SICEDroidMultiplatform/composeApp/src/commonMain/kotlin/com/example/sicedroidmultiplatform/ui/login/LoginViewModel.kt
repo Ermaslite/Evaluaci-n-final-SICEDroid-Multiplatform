@@ -15,7 +15,7 @@ class LoginViewModel(private val repository: SicenetRepository) : ViewModel() {
     var error by mutableStateOf<String?>(null)
         private set
 
-    // Datos que el usuario ingresa en la pantalla
+    // Campos vinculados a la UI
     var matricula by mutableStateOf(settings.getString("saved_matricula", ""))
     var contrasenia by mutableStateOf(settings.getString("saved_contrasenia", ""))
     var rememberMe by mutableStateOf(settings.getBoolean("remember_me", false))
@@ -34,13 +34,13 @@ class LoginViewModel(private val repository: SicenetRepository) : ViewModel() {
                 println("RESPUESTA_SICENET: $result")
 
                 if (result != null) {
-                    // Comprueba si el inicio de sesión fue correcto buscando palabras clave en la respuesta
+                    // Verificamos si la respuesta indica éxito
                     val isSuccess = result.contains("\"acceso\":true", ignoreCase = true) || 
                                    result.contains("\"acceso\":\"true\"", ignoreCase = true) ||
                                    (result.length > 100 && !result.contains("error", ignoreCase = true))
 
                     if (isSuccess) {
-                        // Si el usuario eligió "Recordarme", guardamos sus datos para la próxima vez
+                        // Guardar o limpiar credenciales según el checkbox
                         if (rememberMe) {
                             settings.putBoolean("remember_me", true)
                             settings.putString("saved_matricula", matricula)
