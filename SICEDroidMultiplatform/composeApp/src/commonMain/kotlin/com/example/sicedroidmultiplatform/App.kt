@@ -17,6 +17,8 @@ import com.example.sicedroidmultiplatform.ui.carga.CargaScreen
 import com.example.sicedroidmultiplatform.ui.carga.CargaViewModel
 import com.example.sicedroidmultiplatform.ui.calificaciones.CalificacionesScreen
 import com.example.sicedroidmultiplatform.ui.calificaciones.CalificacionesViewModel
+import com.example.sicedroidmultiplatform.ui.calificaciones_finales.CalificacionesFinalesScreen
+import com.example.sicedroidmultiplatform.ui.calificaciones_finales.CalificacionesFinalesViewModel
 import com.example.sicedroidmultiplatform.ui.kardex.KardexScreen
 import com.example.sicedroidmultiplatform.ui.kardex.KardexViewModel
 import kotlinx.coroutines.launch
@@ -87,6 +89,16 @@ fun App() {
                             )
 
                             NavigationDrawerItem(
+                                label = { Text("Calificaciones Finales") },
+                                selected = selectedItem == "Calificaciones Finales",
+                                onClick = {
+                                    selectedItem = "Calificaciones Finales"
+                                    scope.launch { drawerState.close() }
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                            )
+
+                            NavigationDrawerItem(
                                 label = { Text("Kardex") },
                                 selected = selectedItem == "Kardex",
                                 onClick = {
@@ -145,6 +157,10 @@ fun App() {
                                 "Calificaciones" -> {
                                     val califViewModel = remember { CalificacionesViewModel(repository) }
                                     CalificacionesScreen(viewModel = califViewModel)
+                                }
+                                "Calificaciones Finales" -> {
+                                    val finalViewModel = remember { CalificacionesFinalesViewModel(repository) }
+                                    CalificacionesFinalesScreen(viewModel = finalViewModel)
                                 }
                                 "Kardex" -> {
                                     val kardexViewModel = remember { KardexViewModel(repository) }

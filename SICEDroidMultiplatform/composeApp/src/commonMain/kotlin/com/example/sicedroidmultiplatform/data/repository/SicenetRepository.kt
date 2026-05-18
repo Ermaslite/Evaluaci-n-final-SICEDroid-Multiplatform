@@ -87,4 +87,20 @@ class SicenetRepository {
             } else null
         } catch (e: Exception) { null }
     }
+
+    suspend fun getCalificacionesFinales(): String? {
+        return try {
+            val response = client.post("https://sicenet.surguanajuato.tecnm.mx/ws/wsalumnos.asmx") {
+                header("Content-Type", "text/xml; charset=utf-8")
+                header("SOAPAction", "\"http://tempuri.org/getAllCalifFinalByAlumnos\"")
+                setBody(SoapRequestBuilder.buildCalificacionesFinalesBody())
+            }
+            if (response.status == HttpStatusCode.OK) {
+                val body = response.bodyAsText()
+                body.substringAfter("<getAllCalifFinalByAlumnosResult>")
+                    .substringBefore("</getAllCalifFinalByAlumnosResult>")
+                    .replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"")
+            } else null
+        } catch (e: Exception) { null }
+    }
 }
