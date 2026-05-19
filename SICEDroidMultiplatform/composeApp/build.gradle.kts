@@ -126,6 +126,16 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.example.sicedroidmultiplatform"
             packageVersion = "1.0.0"
+            
+            linux {
+                iconFile.set(project.file("src/androidMain/res/ITSUR.png"))
+            }
+            windows {
+                iconFile.set(project.file("src/androidMain/res/ITSUR.png"))
+            }
+            macOS {
+                iconFile.set(project.file("src/androidMain/res/ITSUR.png"))
+            }
         }
     }
 }
